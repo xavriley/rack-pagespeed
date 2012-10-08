@@ -15,11 +15,20 @@ class Rack::PageSpeed::Filters::SeoMeta < Rack::PageSpeed::Filter
     doc_title.remove
 
     body_text = document.css('.content_main').inner_text
-    new_meta_desc = body_text.summarize(:ratio => 10)
-    new_meta_keywords = body_text.summarize(:topics => true)
-    meta_desc = document.css("meta[name='description']")
+    new_meta_desc_text = body_text.summarize(:ratio => 10)
+    new_meta_keywords_text = body_text.summarize(:topics => true)
+    meta_desc = document.css("meta[name='description']").first
+    new_meta_desc = meta_desc.clone
+    new_meta_desc.content = new_meta_desc_text
+    meta_desc.before new_meta_desc
+    meta_desc.remove
 
-    binding.pry
+    meta_keywords = document.css("meta[name='keywords']").first
+    new_meta_keywords = meta_keywords.clone
+    new_meta_keywords.content = new_meta_keywords_text
+    meta_keywords.before new_meta_keywords
+    meta_keywords.remove
+
   end
 
 end
