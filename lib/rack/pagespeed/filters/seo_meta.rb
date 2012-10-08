@@ -1,4 +1,7 @@
+require 'summarize'
+
 class Rack::PageSpeed::Filters::SeoMeta < Rack::PageSpeed::Filter
+  name      'seo_meta'
   requires_store
   priority 2
   
@@ -10,7 +13,15 @@ class Rack::PageSpeed::Filters::SeoMeta < Rack::PageSpeed::Filter
     new_title.content = nodes.map{|h1| h1.text() }.join(' ')
     doc_title.before new_title
     doc_title.remove
+
+    body_text = document.css('.content_main').inner_text
+    new_meta_desc = body_text.summarize(:ratio => 10)
+    new_meta_keywords = body_text.summarize(:topics => true)
+    meta_desc = document.css("meta[name='description']")
+
+    binding.pry
   end
+
 end
 
 

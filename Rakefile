@@ -20,6 +20,8 @@ begin
     gem.add_dependency      'memcached'
     gem.add_dependency      'mime-types'
     gem.add_dependency      'jsmin'
+    gem.add_dependency      'summarize'
+    gem.add_development_dependency 'pry'
     gem.add_development_dependency 'rspec', '2.6.0'
     gem.add_development_dependency 'capybara', '1.1.0'
   end
