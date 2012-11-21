@@ -14,20 +14,24 @@ class Rack::PageSpeed::Filters::SeoMeta < Rack::PageSpeed::Filter
     doc_title.before new_title
     doc_title.remove
 
-    body_text = document.css('.content_main').inner_text
+    body_text = document.css('#main').inner_text.gsub(/\s+/, ' ')
 
     new_meta_desc_text = body_text.summarize(:ratio => 10)
     meta_desc = document.css("meta[name='description']").first
     new_meta_desc = meta_desc.clone
-    new_meta_desc['value'] = new_meta_desc_text
+    new_meta_desc['content'] = new_meta_desc_text
     meta_desc.before new_meta_desc
     meta_desc.remove
 
     new_meta_keywords_text = body_text.summarize(:topics => true)
     meta_keywords = document.css("meta[name='keywords']").first
+    meta_keywords ||= Nokogiri::XML::Element.new('meta', document)
+    meta_keywords['name'] = "keywords"
+    meta_keywords['content'] = new_meta_keywords_text.last.to_s
+
     new_meta_keywords = meta_keywords.clone
-    new_meta_keywords['value'] = new_meta_keywords_text.last.to_s
-    meta_keywords.before new_meta_keywords
+    new_meta_keywords['content'] = new_meta_keywords_text.last.to_s
+    new_title.after new_meta_keywords
     meta_keywords.remove
 
   end
